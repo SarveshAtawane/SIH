@@ -1,0 +1,11 @@
+sentence-transformers
+langchain
+langchain-core
+langchain-google-genai
+faiss-cpu
+fastapi
+uvicorn
+pydantic
+google-generativeai
+transformers
+torch
