@@ -1,0 +1,27 @@
+name: Frontend Format
+on:
+  push:
+    branches: [ "**" ]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [ "**" ]
+    paths:
+      - 'frontend/**'
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Format frontend code
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    - run: cd frontend && npm install
+    - run: cd frontend && npm run format
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Apply frontend formatting changes
+        branch: ${{ github.head_ref }}
+        directory: frontend
