@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Middle: College Search Dropdown */}
-      <div className="relative w-1/3">
+      <div className="relative w-1/3 ">
         <Input
           value={searchTerm}
           onChange={handleSearch}
@@ -56,6 +56,7 @@ const Navbar: React.FC = () => {
 
       {/* Right: Predictor and User Icon */}
       <div className="flex items-center space-x-4">
+        <Button>News</Button>
         <Button>College Predictor</Button>
         <Button>LogIn</Button>
 
