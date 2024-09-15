@@ -4,6 +4,7 @@ import { Calculator, Newspaper, Bot } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import CollegeList from "@/components/CollegeList"; 
 
+
 const Home: React.FC = () => {
   return (
     <div>
@@ -112,31 +113,7 @@ const Home: React.FC = () => {
 
       {/* News Section */}
       <section className="py-8 bg-white z-50 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <h2 className="font-bold text-3xl text-center mb-8">Latest News and Updates</h2>
-        <Carousel>
-          <CarouselContent>
-            <CarouselItem>
-              <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold">Update 1: Admission Deadline Extended</h3>
-                <p className="mt-2 text-sm text-gray-600">Rajasthan government has extended the admission deadline...</p>
-              </div>
-            </CarouselItem>
-            <CarouselItem>
-              <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold">Update 2: New Courses Introduced</h3>
-                <p className="mt-2 text-sm text-gray-600">Several new courses have been introduced in various colleges...</p>
-              </div>
-            </CarouselItem>
-            <CarouselItem>
-              <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold">Update 3: Scholarship Programs</h3>
-                <p className="mt-2 text-sm text-gray-600">Check out the latest scholarship programs available for students...</p>
-              </div>
-            </CarouselItem>
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+       
       </section>
     </div>
   );
