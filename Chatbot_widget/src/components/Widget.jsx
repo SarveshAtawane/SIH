@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { MessageSquare, X, Menu, Mic, Send } from 'lucide-react';
+import { MessageSquare, X, Menu, Mic, Send, ChevronLeft, ChevronRight } from 'lucide-react';
+import collegeList from './collegelist';
+import newsItems from './News';
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [inputText, setInputText] = useState('');
+  const [score, setScore] = useState('');
+  const [predictedColleges, setPredictedColleges] = useState([]);
+  const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [chatHistory, setChatHistory] = useState([]);
   const [selectedCollege, setSelectedCollege] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('English');
@@ -13,6 +18,41 @@ const ChatbotWidget = () => {
     setIsOpen(!isOpen);
     setShowChat(false);
   };
+
+  const predictColleges = () => {
+    const scoreNum = parseFloat(score);
+    if (!isNaN(scoreNum)) {
+      const predicted = collegeList
+        .filter(college => college.minScore <= scoreNum)
+        .sort((a, b) => b.minScore - a.minScore)
+        .slice(0, 3);
+      setPredictedColleges(predicted);
+    }
+  };
+
+  const nextNews = () => {
+    setCurrentNewsIndex((prevIndex) => (prevIndex + 1) % newsItems.length);
+  };
+
+  const prevNews = () => {
+    setCurrentNewsIndex((prevIndex) => (prevIndex - 1 + newsItems.length) % newsItems.length);
+  };
+
+  const handleScoreChange = (e) => {
+    setScore(e.target.value);
+  };
+
+  const handleCollegeChange = (e) => {
+    setSelectedCollege(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      predictColleges();
+    }
+  };
+
+  
 
   const handleSend = () => {
     if (inputText.trim()) {
@@ -50,7 +90,7 @@ const ChatbotWidget = () => {
         lang: selectedLanguage,
       }),
     };
-  
+  console.log(requestOptions)
     fetch("http://localhost:8000/ask_query", requestOptions)
       .then((res) => res.json())
       .then((data) => {
@@ -58,6 +98,7 @@ const ChatbotWidget = () => {
           ...updatedHistory,
           { type: 'response', text: data.answer }
         ]);
+
       })
       .catch(() => {
         setChatHistory([
@@ -68,6 +109,64 @@ const ChatbotWidget = () => {
   };
 
   const styles = {
+    newsCardStyles: {
+      backgroundColor: 'white',
+      padding: '1rem',
+      borderRadius: '0.5rem',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      height: '150px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
+    newsButtonStyles: {
+      backgroundColor: '#2563EB',
+      color: 'white',
+      border: 'none',
+      borderRadius: '50%',
+      width: '30px',
+      height: '30px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+    },
+    predictorCard: {
+      backgroundColor: '#0066CC',
+      borderRadius: '0.5rem',
+      padding: '1rem',
+      display: 'flex',
+      color: 'white',
+    },
+    predictorLeft: {
+      flex: 1,
+      marginRight: '1rem',
+    },
+    predictorRight: {
+      flex: 1,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '0.5rem',
+      padding: '0.5rem',
+      color: '#333',
+    },
+    predictorInput: {
+      width: '100%',
+      padding: '0.5rem',
+      border: 'none',
+      borderRadius: '0.25rem',
+      marginTop: '0.5rem',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      color: '#333',
+      fontSize: '1rem',
+    },
+    topCollegesList: {
+      listStyle: 'none',
+      padding: 0,
+      margin: 0,
+    },
+    topCollegesItem: {
+      padding: '0.25rem 0',
+    },
     widgetContainer: {
       position: 'fixed',
       bottom: '1rem',
@@ -117,25 +216,14 @@ const ChatbotWidget = () => {
       borderRadius: '0.5rem',
       marginBottom: '1rem',
     },
-    inputContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      borderTop: '1px solid #E5E7EB',
-      padding: '1rem',
-    },
+    
     input: {
       flex: 1,
       padding: '0.5rem',
       border: '1px solid #D1D5DB',
       borderRadius: '0.5rem 0 0 0.5rem',
     },
-    select: {
-      flex: 1,
-      padding: '0.5rem',
-      border: '1px solid #D1D5DB',
-      borderRadius: '0.5rem',
-      marginRight: '0.5rem',
-    },
+    
     micButton: {
       padding: '0.5rem',
       backgroundColor: '#F9FAFB',
@@ -150,6 +238,30 @@ const ChatbotWidget = () => {
       borderRadius: '0 0.5rem 0.5rem 0',
       cursor: 'pointer',
     },
+    inputContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      borderTop: '1px solid #E5E7EB',
+      padding: '1rem',
+    },
+    dropdownContainer: {
+      display: 'flex',
+      gap: '0.5rem',
+      marginBottom: '1rem',
+    },
+    select: {
+      flex: 1,
+      maxWidth: '150px', // Fixed width to prevent horizontal expansion
+      padding: '0.5rem',
+      border: '1px solid #D1D5DB',
+      borderRadius: '0.5rem',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      color: '#333',
+      fontSize: '1rem',
+      marginRight: '0.5rem',
+    },
+  
     chatBubble: {
       maxWidth: '70%',
       padding: '0.75rem',
@@ -182,89 +294,103 @@ const ChatbotWidget = () => {
       flexDirection: 'column',
       border: '1px solid #E0E0E0',
     },
+    
   };
 
   return (
     <div style={styles.widgetContainer}>
-      {!isOpen ? (
-        <button
-          onClick={toggleWidget}
-          style={styles.button}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-        >
-          <MessageSquare size={32} />
-        </button>
-      ) : (
-        <div style={styles.chatContainer}>
-          <div style={styles.header}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Menu size={20} style={{ marginRight: '0.5rem' }} />
-              <span>Pragya</span>
-            </div>
-            <button onClick={toggleWidget} style={{ color: 'white' }}>
-              <X size={20} />
-            </button>
+    {!isOpen ? (
+      <button
+        onClick={toggleWidget}
+        style={styles.button}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+      >
+        <MessageSquare size={32} />
+      </button>
+    ) : (
+      <div style={styles.chatContainer}>
+        <div style={styles.header}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Menu size={20} style={{ marginRight: '0.5rem' }} />
+           
+            <span>Pragya</span>
           </div>
-          <div style={styles.body}>
-            {!showChat ? (
-              <>
-                <div style={styles.card}>
-                  <h2 style={{ marginBottom: '0.5rem' }}>Predict your College</h2>
+          <button onClick={toggleWidget} style={{ color: 'white' }}>
+            <X size={20} />
+          </button>
+        </div>
+        <div style={styles.body}>
+          {!showChat ? (
+            <>
+              <div style={styles.predictorCard}>
+                <div style={styles.predictorLeft}>
+                  <h2 style={{ margin: 0, marginBottom: '0.5rem' }}>Predict your College</h2>
                   <input
                     type="text"
+                    value={score}
+                    onChange={handleScoreChange}
+                    onKeyPress={handleKeyPress}
                     placeholder="Enter Your Score..."
-                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '0.5rem', marginBottom: '0.5rem' }}
+                    style={styles.predictorInput}
                   />
-                  <div style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', maxHeight: '6rem', overflowY: 'auto' }}>
-                    <p style={{ fontWeight: 'bold' }}>Top Colleges</p>
-                    <ul style={{ paddingLeft: '1rem' }}>
-                      <li>College A</li>
-                      <li>College B</li>
-                      <li>College C</li>
-                    </ul>
-                  </div>
                 </div>
-                <div style={styles.card}>
-                  <h2 style={{ marginBottom: '0.5rem' }}>Top News For You</h2>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <button>&lt;</button>
-                    <button>&gt;</button>
-                  </div>
-                  <div style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', maxHeight: '6rem', overflowY: 'auto' }}>
-                    <p style={{ fontWeight: 'bold' }}>Latest News Headline</p>
-                    <p>Brief description of the news item goes here. Click to read more.</p>
-                  </div>
+                <div style={styles.predictorRight}>
+                  <h3 style={{ margin: 0, marginBottom: '0.5rem' }}>Top Colleges</h3>
+                  <ul style={styles.topCollegesList}>
+                    {predictedColleges.map((college, index) => (
+                      <li key={index} style={styles.topCollegesItem}>{college.name}</li>
+                    ))}
+                  </ul>
                 </div>
-              </>
-            ) : (
-            <div id='chatElement' style={styles.chatElement}>
-                {chatHistory.map((message, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      ...styles.chatBubble,
-                      ...(message.type === 'query' ? styles.userBubble : styles.botBubble),
-                    }}
-                  >
-                    {message.text}
-                  </div>
-                ))}
               </div>
-            )}
-          </div>
-          <div style={styles.inputContainer}>
-            {!showChat && (
-              <div style={{ display: 'flex', marginBottom: '1rem' }}>
-                <select style={styles.select}
-                 value={selectedCollege}
-                 onChange={(e) => setSelectedCollege(e.target.value)}>
-                  <option>Select College</option>
-                  <option value="A">College A</option>
-                  <option value="B">College B</option >
-                  <option value="C">College C</option >
-                </select>
-                <select style={styles.select}
+              <div style={{marginTop:'3rem'}}>
+              <div style={styles.card}>
+                <h2 style={{ marginBottom: '0.5rem' }}>Top News For You</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <button onClick={prevNews} style={styles.newsButtonStyles}>
+                    <ChevronLeft size={20} />
+                  </button>
+                  <span>{`${currentNewsIndex + 1} / ${newsItems.length}`}</span>
+                  <button onClick={nextNews} style={styles.newsButtonStyles}>
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+                <div style={styles.newsCardStyles}>
+                  <h3 style={{ margin: 0, marginBottom: '0.5rem' }}>{newsItems[currentNewsIndex].title}</h3>
+                  <p style={{ margin: 0, fontSize: '0.9rem' }}>{newsItems[currentNewsIndex].description}</p>
+                </div>
+              </div>
+              </div>
+            </>
+          ) : (
+            <div id='chatElement' style={styles.chatElement}>
+              {chatHistory.map((message, index) => (
+                <div
+                  key={index}
+                  style={{
+                    ...styles.chatBubble,
+                    ...(message.type === 'query' ? styles.userBubble : styles.botBubble),
+                  }}
+                >
+                  {message.text}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div style={styles.inputContainer}>
+          {!showChat && (
+            <div style={{ display: 'flex', marginBottom: '1rem' }}>
+              <select style={styles.select} value={selectedCollege} onChange={handleCollegeChange}>
+                <option value="">Select College</option>
+                {collegeList.map((college, index) => (
+                  <option key={index} value={college.name}>
+                    {college.name}
+                  </option>
+                ))}
+              </select>
+              <select style={styles.select}
                   value={selectedLanguage}
                   onChange={(e) => setSelectedLanguage(e.target.value)}
                 >
@@ -272,27 +398,27 @@ const ChatbotWidget = () => {
                   <option value="English">English</option >
                   <option value="Hindi">Hindi</option >
                 </select>
-              </div>
-            )}
-          </div>
-          <div style={styles.inputContainer}>
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder="Enter your text..."
-              style={styles.input}
-            />
-            <button style={styles.micButton}>
-              <Mic size={20} />
-            </button>
-            <button style={styles.sendButton} onClick={handleSend}>
-              <Send size={20} />
-            </button>
-          </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+        <div style={styles.inputContainer}>
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Enter your text..."
+            style={styles.input}
+          />
+          <button style={styles.micButton}>
+            <Mic size={20} />
+          </button>
+          <button style={styles.sendButton} onClick={handleSend}>
+            <Send size={20} />
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
   );
 };
 
