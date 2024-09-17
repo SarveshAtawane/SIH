@@ -1,146 +1,202 @@
 import React, { useState } from 'react';
-import { MessageSquare, X, Send } from 'lucide-react';
-
-const styles = {
-  widgetContainer: {
-    position: 'fixed',
-    bottom: '1rem',
-    right: '1rem',
-    zIndex: 9999,
-    fontFamily: 'Arial, sans-serif',
-  },
-  chatContainer: {
-    backgroundColor: 'white',
-    borderRadius: '0.5rem',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
-    width: '20rem',
-    height: '24rem',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-  },
-  chatHeader: {
-    backgroundColor: '#2563eb',
-    color: 'white',
-    padding: '1rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  chatTitle: {
-    fontWeight: 'bold',
-    fontSize: '1.125rem',
-    margin: 0,
-  },
-  closeButton: {
-    background: 'none',
-    border: 'none',
-    color: 'white',
-    cursor: 'pointer',
-  },
-  messagesContainer: {
-    flex: 1,
-    overflowY: 'auto',
-    padding: '1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  message: (sender) => ({
-    maxWidth: '75%',
-    padding: '0.5rem',
-    borderRadius: '0.375rem',
-    alignSelf: sender === 'user' ? 'flex-end' : 'flex-start',
-    backgroundColor: sender === 'user' ? '#2563eb' : '#e5e7eb',
-    color: sender === 'user' ? 'white' : 'black',
-  }),
-  inputForm: {
-    padding: '1rem',
-    borderTop: '1px solid #e5e7eb',
-  },
-  inputContainer: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    border: '1px solid #d1d5db',
-    borderRadius: '0.375rem 0 0 0.375rem',
-    padding: '0.5rem',
-  },
-  sendButton: {
-    backgroundColor: '#2563eb',
-    color: 'white',
-    padding: '0.5rem',
-    border: 'none',
-    borderRadius: '0 0.375rem 0.375rem 0',
-    cursor: 'pointer',
-  },
-  toggleButton: {
-    backgroundColor: '#2563eb',
-    color: 'white',
-    padding: '0.75rem',
-    border: 'none',
-    borderRadius: '9999px',
-    cursor: 'pointer',
-  },
-};
+import { MessageSquare, X, Menu, Mic, Send } from 'lucide-react';
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [showChat, setShowChat] = useState(false);
+  const [inputText, setInputText] = useState('');
 
-  const toggleChat = () => setIsOpen(!isOpen);
+  const toggleWidget = () => {
+    setIsOpen(!isOpen);
+    setShowChat(false);
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (input.trim()) {
-      setMessages([...messages, { text: input, sender: 'user' }]);
-      setInput('');
-      // Here you would typically call your AI backend to get a response
-      setTimeout(() => {
-        setMessages(prev => [...prev, { text: "This is a mock AI response.", sender: 'ai' }]);
-      }, 1000);
+  const handleSend = () => {
+    if (inputText.trim()) {
+      setShowChat(true);
+      // Handle sending message logic here
     }
+  };
+
+  const styles = {
+    widgetContainer: {
+      position: 'fixed',
+      bottom: '1rem',
+      right: '1rem',
+      zIndex: 9999,
+      fontFamily: 'Arial, sans-serif',
+    },
+    button: {
+      backgroundColor: '#2563EB',
+      color: 'white',
+      borderRadius: '50%',
+      padding: '0.75rem',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      cursor: 'pointer',
+      transition: 'background-color 0.2s',
+    },
+    buttonHover: {
+      backgroundColor: '#1D4ED8',
+    },
+    chatContainer: {
+      backgroundColor: 'white',
+      borderRadius: '0.5rem',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+      width: '24rem',
+      height: '90vh',
+      maxHeight: '800px',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+    },
+    header: {
+      backgroundColor: '#2563EB',
+      color: 'white',
+      padding: '1rem',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    body: {
+      flexGrow: 1,
+      padding: '1rem',
+      overflowY: 'auto',
+    },
+    card: {
+      backgroundColor: '#F3F4F6',
+      padding: '1rem',
+      borderRadius: '0.5rem',
+      marginBottom: '1rem',
+    },
+    inputContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      borderTop: '1px solid #E5E7EB',
+      padding: '1rem',
+    },
+    input: {
+      flex: 1,
+      padding: '0.5rem',
+      border: '1px solid #D1D5DB',
+      borderRadius: '0.5rem 0 0 0.5rem',
+    },
+    select: {
+      flex: 1,
+      padding: '0.5rem',
+      border: '1px solid #D1D5DB',
+      borderRadius: '0.5rem',
+      marginRight: '0.5rem',
+    },
+    micButton: {
+      padding: '0.5rem',
+      backgroundColor: '#F9FAFB',
+      border: '1px solid #D1D5DB',
+      borderRadius: '0 0.5rem 0.5rem 0',
+      cursor: 'pointer',
+    },
+    sendButton: {
+      padding: '0.5rem',
+      backgroundColor: '#2563EB',
+      color: 'white',
+      borderRadius: '0 0.5rem 0.5rem 0',
+      cursor: 'pointer',
+    },
   };
 
   return (
     <div style={styles.widgetContainer}>
-      {isOpen ? (
+      {!isOpen ? (
+        <button
+          onClick={toggleWidget}
+          style={styles.button}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+        >
+          <MessageSquare size={32} />
+        </button>
+      ) : (
         <div style={styles.chatContainer}>
-          <div style={styles.chatHeader}>
-            <h3 style={styles.chatTitle}>AI Chat</h3>
-            <button style={styles.closeButton} onClick={toggleChat}>
-              <X size={24} />
+          <div style={styles.header}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Menu size={20} style={{ marginRight: '0.5rem' }} />
+              <span>Pragya</span>
+            </div>
+            <button onClick={toggleWidget} style={{ color: 'white' }}>
+              <X size={20} />
             </button>
           </div>
-          <div style={styles.messagesContainer}>
-            {messages.map((message, index) => (
-              <div key={index} style={styles.message(message.sender)}>
-                {message.text}
+          <div style={styles.body}>
+            {!showChat ? (
+              <>
+                <div style={styles.card}>
+                  <h2 style={{ marginBottom: '0.5rem' }}>Predict your College</h2>
+                  <input
+                    type="text"
+                    placeholder="Enter Your Score..."
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '0.5rem', marginBottom: '0.5rem' }}
+                  />
+                  <div style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', maxHeight: '6rem', overflowY: 'auto' }}>
+                    <p style={{ fontWeight: 'bold' }}>Top Colleges</p>
+                    <ul style={{ paddingLeft: '1rem' }}>
+                      <li>College A</li>
+                      <li>College B</li>
+                      <li>College C</li>
+                    </ul>
+                  </div>
+                </div>
+                <div style={styles.card}>
+                  <h2 style={{ marginBottom: '0.5rem' }}>Top News For You</h2>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <button>&lt;</button>
+                    <button>&gt;</button>
+                  </div>
+                  <div style={{ backgroundColor: 'white', padding: '0.5rem', borderRadius: '0.5rem', maxHeight: '6rem', overflowY: 'auto' }}>
+                    <p style={{ fontWeight: 'bold' }}>Latest News Headline</p>
+                    <p>Brief description of the news item goes here. Click to read more.</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div style={{ backgroundColor: '#F3F4F6', padding: '1rem', borderRadius: '0.5rem', height: '100%' }}>
+                <p>Chat interface placeholder</p>
+                <p>Messages would appear here...</p>
               </div>
-            ))}
+            )}
           </div>
-          <form onSubmit={handleSubmit} style={styles.inputForm}>
-            <div style={styles.inputContainer}>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a message..."
-                style={styles.input}
-              />
-              <button type="submit" style={styles.sendButton}>
-                <Send size={20} />
-              </button>
-            </div>
-          </form>
+          <div style={styles.inputContainer}>
+            {!showChat && (
+              <div style={{ display: 'flex', marginBottom: '1rem' }}>
+                <select style={styles.select}>
+                  <option>Select College</option>
+                  <option>College A</option>
+                  <option>College B</option>
+                  <option>College C</option>
+                </select>
+                <select style={styles.select}>
+                  <option>Select Language</option>
+                  <option>English</option>
+                  <option>Hindi</option>
+                  <option>Bengali</option>
+                </select>
+              </div>
+            )}
+          </div>
+          <div style={styles.inputContainer}>
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Enter your text..."
+              style={styles.input}
+            />
+            <button style={styles.micButton}>
+              <Mic size={20} />
+            </button>
+            <button style={styles.sendButton} onClick={handleSend}>
+              <Send size={20} />
+            </button>
+          </div>
         </div>
-      ) : (
-        <button onClick={toggleChat} style={styles.toggleButton}>
-          <MessageSquare size={24} />
-        </button>
       )}
     </div>
   );
