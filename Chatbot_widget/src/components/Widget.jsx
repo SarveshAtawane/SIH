@@ -1,22 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { MessageSquare, X, Menu, Mic, Send } from 'lucide-react';
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [inputText, setInputText] = useState('');
-  const [response, setResponse] = useState('');
+  const [chatHistory, setChatHistory] = useState([]);
+  const [selectedCollege, setSelectedCollege] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
 
   const toggleWidget = () => {
     setIsOpen(!isOpen);
     setShowChat(false);
   };
+
+  const handleSend = () => {
+    if (inputText.trim()) {
+      // Show chat UI
+      setShowChat(true);
   
-  const chatElement = document.getElementById('chatElement');
-
-  const generateResponse = (chatElement) => {
-    // const messageElement = chatElement.querySelector("p");
-
+      // Add the user's query to the chat history immediately
+      setChatHistory(prevHistory => {
+        const updatedHistory = [
+          ...prevHistory,
+          { type: 'query', text: inputText }
+        ];
+        
+        // Generate the AI response
+        generateResponse(updatedHistory);
+  
+        // Return the updated chat history for the state
+        return updatedHistory;
+      });
+  
+      // Clear the input field
+      setInputText('');
+    }
+  };
+  
+  const generateResponse = (updatedHistory) => {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -24,35 +46,26 @@ const ChatbotWidget = () => {
       },
       body: JSON.stringify({
         query: inputText,
-        college_name: "gpcajmer",
-        lang: "English",
+        college_name: selectedCollege,
+        lang: selectedLanguage,
       }),
     };
-
+  
     fetch("http://localhost:8000/ask_query", requestOptions)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setResponse(data.data);
+        setChatHistory([
+          ...updatedHistory,
+          { type: 'response', text: data.answer }
+        ]);
       })
       .catch(() => {
-        // messageElement.classList.add("error");
-        // messageElement.textContent =
-          "Oops! Something went wrong. Please try again.";
+        setChatHistory([
+          ...updatedHistory,
+          { type: 'response', text: "Oops! Something went wrong. Please try again." }
+        ]);
       });
   };
-
-  const handleSend = () => {
-    if (inputText.trim()) {
-      setShowChat(true);
-      // Handle sending message logic here
-      generateResponse(chatElement);
-    }
-  };
-
-  useEffect(() => {
-    // Response effect handling if needed
-  }, [response]);
 
   const styles = {
     widgetContainer: {
@@ -137,6 +150,38 @@ const ChatbotWidget = () => {
       borderRadius: '0 0.5rem 0.5rem 0',
       cursor: 'pointer',
     },
+    chatBubble: {
+      maxWidth: '70%',
+      padding: '0.75rem',
+      borderRadius: '15px',
+      margin: '0.5rem 0',
+      fontSize: '0.875rem',
+      lineHeight: '1.25rem',
+      wordWrap: 'break-word',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    userBubble: {
+      backgroundColor: '#2563EB', // Blue color for user messages
+      alignSelf: 'flex-end',
+      color: 'white', // White text color for contrast
+      borderTopRightRadius: '0',
+    },
+    botBubble: {
+      backgroundColor: '#F3F4F6', // Light gray for bot messages
+      alignSelf: 'flex-start',
+      color: '#333', // Dark text color for readability
+      borderTopLeftRadius: '0',
+    },
+    chatElement: {
+      backgroundColor: '#FFF',
+      padding: '1rem',
+      borderRadius: '0.5rem',
+      height: '100%',
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      border: '1px solid #E0E0E0',
+    },
   };
 
   return (
@@ -193,25 +238,39 @@ const ChatbotWidget = () => {
                 </div>
               </>
             ) : (
-              <div id='chatElement' style={{ backgroundColor: '#F3F4F6', padding: '1rem', borderRadius: '0.5rem', height: '100%' }}>
-                {response && <p>{response}</p>}
+            <div id='chatElement' style={styles.chatElement}>
+                {chatHistory.map((message, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      ...styles.chatBubble,
+                      ...(message.type === 'query' ? styles.userBubble : styles.botBubble),
+                    }}
+                  >
+                    {message.text}
+                  </div>
+                ))}
               </div>
             )}
           </div>
           <div style={styles.inputContainer}>
             {!showChat && (
               <div style={{ display: 'flex', marginBottom: '1rem' }}>
-                <select style={styles.select}>
+                <select style={styles.select}
+                 value={selectedCollege}
+                 onChange={(e) => setSelectedCollege(e.target.value)}>
                   <option>Select College</option>
-                  <option>College A</option>
-                  <option>College B</option>
-                  <option>College C</option>
+                  <option value="A">College A</option>
+                  <option value="B">College B</option >
+                  <option value="C">College C</option >
                 </select>
-                <select style={styles.select}>
-                  <option>Select Language</option>
-                  <option>English</option>
-                  <option>Hindi</option>
-                  <option>Bengali</option>
+                <select style={styles.select}
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                >
+                  <option >Select Language</option >
+                  <option value="English">English</option >
+                  <option value="Hindi">Hindi</option >
                 </select>
               </div>
             )}
