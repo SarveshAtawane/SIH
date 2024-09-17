@@ -1,22 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MessageSquare, X, Menu, Mic, Send } from 'lucide-react';
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [inputText, setInputText] = useState('');
+  const [response, setResponse] = useState('');
 
   const toggleWidget = () => {
     setIsOpen(!isOpen);
     setShowChat(false);
+  };
+  
+  const chatElement = document.getElementById('chatElement');
+
+  const generateResponse = (chatElement) => {
+    // const messageElement = chatElement.querySelector("p");
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: inputText,
+        college_name: "gpcajmer",
+        lang: "English",
+      }),
+    };
+
+    fetch("http://localhost:8000/ask_query", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setResponse(data.data);
+      })
+      .catch(() => {
+        // messageElement.classList.add("error");
+        // messageElement.textContent =
+          "Oops! Something went wrong. Please try again.";
+      });
   };
 
   const handleSend = () => {
     if (inputText.trim()) {
       setShowChat(true);
       // Handle sending message logic here
+      generateResponse(chatElement);
     }
   };
+
+  useEffect(() => {
+    // Response effect handling if needed
+  }, [response]);
 
   const styles = {
     widgetContainer: {
@@ -157,9 +193,8 @@ const ChatbotWidget = () => {
                 </div>
               </>
             ) : (
-              <div style={{ backgroundColor: '#F3F4F6', padding: '1rem', borderRadius: '0.5rem', height: '100%' }}>
-                <p>Chat interface placeholder</p>
-                <p>Messages would appear here...</p>
+              <div id='chatElement' style={{ backgroundColor: '#F3F4F6', padding: '1rem', borderRadius: '0.5rem', height: '100%' }}>
+                {response && <p>{response}</p>}
               </div>
             )}
           </div>
