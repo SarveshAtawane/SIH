@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import ChatbotWidget from './components/Widget';
 import './index.css';
 function App() {

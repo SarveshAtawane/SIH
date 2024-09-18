@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MessageSquare, X, Menu, Mic, Send, ChevronLeft, ChevronRight } from 'lucide-react';
 import collegeList from './collegelist';
 import newsItems from './News';
+const ReactMarkdown = React.lazy(() => import('react-markdown'));
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +78,13 @@ const ChatbotWidget = () => {
       setInputText('');
     }
   };
-  
+
+  const keypress2 = (e) => {
+    if(e.key === 'Enter'){
+      handleSend();
+    }
+  }
+
   const generateResponse = (updatedHistory) => {
     const requestOptions = {
       method: "POST",
@@ -96,7 +103,7 @@ const ChatbotWidget = () => {
       .then((data) => {
         setChatHistory([
           ...updatedHistory,
-          { type: 'response', text: data.answer }
+          { type: 'response', text: data.answer,isMarkdown:true }
         ]);
 
       })
@@ -107,6 +114,7 @@ const ChatbotWidget = () => {
         ]);
       });
   };
+  
 
   const styles = {
     newsCardStyles: {
@@ -316,7 +324,7 @@ const ChatbotWidget = () => {
            
             <span>Pragya</span>
           </div>
-          <button onClick={toggleWidget} style={{ color: 'white' }}>
+          <button onClick={toggleWidget} style={{ color: 'black' }}>
             <X size={20} />
           </button>
         </div>
@@ -373,7 +381,11 @@ const ChatbotWidget = () => {
                     ...(message.type === 'query' ? styles.userBubble : styles.botBubble),
                   }}
                 >
-                  {message.text}
+                     {message.isMarkdown ? (
+                    <ReactMarkdown>{message.text}</ReactMarkdown>
+                  ) : (
+                    <p>{message.text}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -408,6 +420,7 @@ const ChatbotWidget = () => {
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Enter your text..."
             style={styles.input}
+            onKeyPress={keypress2}
           />
           <button style={styles.micButton}>
             <Mic size={20} />
