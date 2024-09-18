@@ -397,7 +397,7 @@ const ChatbotWidget = () => {
               <select style={styles.select} value={selectedCollege} onChange={handleCollegeChange}>
                 <option value="">Select College</option>
                 {collegeList.map((college, index) => (
-                  <option key={index} value={college.name}>
+                  <option key={index} value={college.value}>
                     {college.name}
                   </option>
                 ))}

@@ -1,13 +1,14 @@
-const collegeList=[
-  { name: "gpcajmer", minScore: 85 },
-  { name: "Rajasthan Technical University, Kota", minScore: 80 },
-  { name: "BITS Pilani, Pilani", minScore: 90 },
-  { name: "JECRC University, Jaipur", minScore: 75 },
-  { name: "Manipal University, Jaipur", minScore: 80 },
-  { name: "Poornima University, Jaipur", minScore: 70 },
-  { name: "Vivekananda Global University, Jaipur", minScore: 72 },
-  { name: "The LNM Institute of Information Technology, Jaipur", minScore: 85 },
-  { name: "Government Engineering College, Ajmer", minScore: 78 },
-  { name: "Swami Keshvanand Institute of Technology, Jaipur", minScore: 74 }
-]
-export default collegeList
+const collegeList = [
+  { name: "Government Polytechnic College, Ajmer", minScore: 85, value: "gpcajmer" },
+  { name: "Government Polytechnic College, Alwar", minScore: 80, value: "gpcalwar" },
+  { name: "Government Polytechnic College, Banswara", minScore: 75, value: "gpcbanswara" },
+  { name: "Government Polytechnic College, Baran", minScore: 78, value: "gpcbaran" },
+  { name: "Government Polytechnic College, Barmer", minScore: 70, value: "gpcbarmer" },
+  { name: "Government Polytechnic College, Bharatpur", minScore: 72, value: "gpcbharatpur" },
+  { name: "Government Polytechnic College, Bhilwara", minScore: 74, value: "gpcbhilwara" },
+  { name: "Government Polytechnic College, Bikaner", minScore: 80, value: "gpcbikaner" },
+  { name: "Government Polytechnic College, Bundi", minScore: 77, value: "gpcbundi" },
+  { name: "Government Polytechnic College, Chittorgarh", minScore: 73, value: "gpcchittorgarh" },
+];
+
+export default collegeList;
