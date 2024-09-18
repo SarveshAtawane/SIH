@@ -1,5 +1,5 @@
 const collegeList=[
-  { name: "Malaviya National Institute of Technology (MNIT), Jaipur", minScore: 85 },
+  { name: "gpcajmer", minScore: 85 },
   { name: "Rajasthan Technical University, Kota", minScore: 80 },
   { name: "BITS Pilani, Pilani", minScore: 90 },
   { name: "JECRC University, Jaipur", minScore: 75 },
